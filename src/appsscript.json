@@ -1,0 +1,20 @@
+{
+  "timeZone": "Europe/Paris",
+  "dependencies": {
+  },
+  "exceptionLogging": "STACKDRIVER",
+  "runtimeVersion": "V8",
+  "oauthScopes": [
+    "https://www.googleapis.com/auth/script.external_request"
+  ],
+  "dataStudio": {
+    "name": "Loopsider - Datastudio Connector",
+    "logoUrl": "https://loopsider.com/assets/logo.svg",
+    "company": "Loopsider",
+    "companyUrl": "https://loopsider.com",
+    "addonUrl": "https://loopsider.com",
+    "supportUrl": "https://loopsider.com",
+    "description": "Connect to loopsider's private API",
+    "sources": []
+  }
+}
