@@ -2,27 +2,43 @@
   'use strict';
 })();
 
-var SchemaTemplateBase = (function (api) {
+var Model = (function (api) {
+  /**
+   * Helper function to transform an object into a query string
+   *
+   * @param   {[type]}  queryObject  [queryObject description]
+   *
+   * @return  {[type]}               [return description]
+   */
+  api.toQueryString = function toQueryString(queryObject) {
+    var queryString = '';
+    for (var key in queryObject) {
+      var value = queryObject[key];
+      queryString += encodeURIComponent(key) + '=' + encodeURIComponent(value) + '&';
+    }
+    if (queryString.length > 0) {
+      queryString = queryString.substring(0, queryString.length - 1); //chop off last "&"
+      queryString = '?' + queryString;
+    }
+
+    return queryString;
+  };
+
   api.getFieldsString = function getFieldsString(fieldsDefinition, requestedFields) {
-    console.log('getFieldsString');
-    console.log(requestedFields);
     if (requestedFields) {
-      console.log('INSIDE');
       // clean fieldsDefinition
       var fieldNames = requestedFields.map(function (requestedField) {
         return requestedField.name;
       });
-      fieldsDefinition = SchemaTemplateBase.findMinimumDefinitionFromRequest(fieldsDefinition, fieldNames);
-      console.log(fieldsDefinition);
+      fieldsDefinition = Model.findMinimumDefinitionFromRequest(fieldsDefinition, fieldNames);
     }
 
-    var fields = SchemaTemplateBase.getFieldsStringRecursive(fieldsDefinition);
+    var fields = Model.getFieldsStringRecursive(fieldsDefinition);
 
     return fields;
   };
 
   api.findMinimumDefinitionFromRequest = function findMinimumDefinitionFromRequest(fieldsDefinition, names) {
-    console.log('findMinimumDefinitionFromRequest 001', fieldsDefinition, names);
     var updatedDefinition = {};
     names.map(function (name) {
       var suffix = '';
@@ -34,7 +50,6 @@ var SchemaTemplateBase = (function (api) {
           if (suffix !== '') {
             value = findMinimumDefinitionFromRequest(fieldsDefinition[name], [suffix]);
           }
-          console.log('findMinimumDefinitionFromRequest 002', name, value);
 
           updatedDefinition[name] = value;
         } else {
@@ -50,7 +65,6 @@ var SchemaTemplateBase = (function (api) {
           }
 
           name = name.substr(0, lastUnderscore);
-          console.log('findMinimumDefinitionFromRequest 003', name, suffix, lastUnderscore);
         }
       }
     });
@@ -61,7 +75,7 @@ var SchemaTemplateBase = (function (api) {
     var fieldsString = '';
     Object.keys(fieldsDefinition).map(function (fieldName) {
       if (typeof fieldsDefinition[fieldName] === 'object' && fieldsDefinition[fieldName] !== null) {
-        fieldsString += fieldName + '{' + SchemaTemplateBase.getFieldsStringRecursive(fieldsDefinition[fieldName]) + '},';
+        fieldsString += fieldName + '{' + Model.getFieldsStringRecursive(fieldsDefinition[fieldName]) + '},';
       } else {
         fieldsString += fieldName + ',';
       }
@@ -74,4 +88,4 @@ var SchemaTemplateBase = (function (api) {
   };
 
   return api;
-})(SchemaTemplateBase || {});
+})(Model || {});

@@ -15,3 +15,13 @@ Note: be sure to update you node and npm version
 ```
 clasp login
 ```
+
+## Development
+
+**Use clasp**
+
+Send your files over to datastudio:
+
+```
+clasp push --watch
+```

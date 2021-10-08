@@ -1,3 +1,5 @@
+var CONNECTOR = DataStudioApp.createCommunityConnector();
+
 function getAuthType() {
   return Auth.getAuthType();
 }
@@ -11,7 +13,9 @@ function getConfig() {
 }
 
 function getSchema(request) {
-  return Schema.getSchema(request);
+  return {
+    schema: Schema.getSchema(request),
+  };
 }
 
 function getData(request) {

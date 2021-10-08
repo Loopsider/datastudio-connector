@@ -2,8 +2,9 @@
   'use strict';
 })();
 
-var SchemaTemplateFacebookPost = (function (api) {
-  api.fields = {
+var FacebookPost = (function (api) {
+  var endpoint = '/facebook/posts';
+  var fields = {
     id: true,
     message: true,
     created_time: true,
@@ -104,15 +105,50 @@ var SchemaTemplateFacebookPost = (function (api) {
     },
   };
 
-  api.endpoint = '/facebook/posts';
-
-  api.getParams = function getParams(requestedFields = null) {
-    return {
-      fields: SchemaTemplateBase.getFieldsString(SchemaTemplateFacebookPost.fields, requestedFields),
+  /**
+   * Generate a query string from Datastudio's requested fields and filters
+   *
+   * @param   {Object}  requestedFields  Datastudio Connector Request.fields Object
+   * @param   {Object]}  filters         Datastudio Connector Request.dimensionsFilters Object
+   * @return  {String}                   Query String
+   */
+  function buildQueryString(requestedFields = null, filters = null, overrideParams = null) {
+    var queryObject = {
+      fields: Model.getFieldsString(fields, requestedFields),
       darkPost: false,
       published: true,
     };
+
+    if (filters) {
+      var nodeId = Filters.getNodeId(filters);
+      queryObject.ids = nodeId;
+    }
+
+    if (overrideParams) {
+      queryObject = {...queryObject, ...overrideParams};
+    }
+
+    return Model.toQueryString(queryObject);
+  }
+
+  /**
+   * Find All rows from facebook-posts by querying the loopsider API
+   *
+   * @param   {Object}  request                           Datastudio Connector Request Object
+   *    @param   {Object}  request.configParams
+   *      @param   {String}  request.configParams.token
+   *    @param   {Object}  request.fieds
+   *    @param   {Object}  request.dimensionsFilters
+   * @return  {Array}                                     API result data (result.data)
+   */
+  api.findAll = function findAll(request, overrideParams) {
+    var queryString = buildQueryString(request.fields, request.dimensionsFilters, overrideParams);
+    var url = API_HOST + endpoint + queryString;
+
+    var content = API.fetchData(url, request.configParams.token);
+
+    return content ? content.data : null;
   };
 
   return api;
-})(SchemaTemplateFacebookPost || {});
+})(FacebookPost || {});

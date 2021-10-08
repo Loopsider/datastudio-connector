@@ -5,9 +5,8 @@
 var Auth = (function (api) {
   // https://developers.google.com/datastudio/connector/reference#getauthtype
   api.getAuthType = function getAuthType() {
-    var cc = DataStudioApp.createCommunityConnector();
-    var AuthTypes = cc.AuthType;
-    return cc.newAuthTypeResponse().setAuthType(AuthTypes.NONE).build();
+    var AuthTypes = CONNECTOR.AuthType;
+    return CONNECTOR.newAuthTypeResponse().setAuthType(AuthTypes.NONE).build();
   };
 
   // https://developers.google.com/datastudio/connector/reference#isadminuser

@@ -5,8 +5,7 @@
 var Config = (function (api) {
   // https://developers.google.com/datastudio/connector/reference#getconfig
   api.getConfig = function getConfig() {
-    var cc = DataStudioApp.createCommunityConnector();
-    var conf = cc.getConfig();
+    var conf = CONNECTOR.getConfig();
 
     conf.newInfo().setId('instructions').setText('Bonjour');
 
