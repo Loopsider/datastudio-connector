@@ -34,15 +34,8 @@ var Schema = (function (api) {
   // https://developers.google.com/datastudio/connector/reference#getschema
   api.getSchema = function getSchema(request) {
     console.log(request);
-    request.configParams = Config.validate(request.configParams);
-
-    var node = request.configParams.node;
-    var content = null;
-    if (node === 'facebook_post') {
-      content = FacebookPost.findAll(request, {limit: 1});
-    } else {
-      throw new Error('Node type not handled !');
-    }
+    var model = Config.getModel(request.configParams);
+    var content = model.findAll(request, {limit: 1});
 
     if (!content || !content.length) {
       console.log('Error in getFields - Cannot retrieve data');

@@ -2,7 +2,7 @@
   'use strict';
 })();
 
-var Filters = (function (api) {
+var FiltersHelper = (function (api) {
   api.getNodeId = function getNodeId(filters) {
     var orFilters = filters ? filters[0] : [];
     var nodeId = orFilters
@@ -21,4 +21,4 @@ var Filters = (function (api) {
   };
 
   return api;
-})(Filters || {});
+})(FiltersHelper || {});

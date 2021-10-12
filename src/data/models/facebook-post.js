@@ -3,6 +3,10 @@
 })();
 
 var FacebookPost = (function (api) {
+  if (!api) {
+    api = Model;
+  }
+
   var endpoint = '/facebook/posts';
   var fields = {
     id: true,
@@ -106,32 +110,6 @@ var FacebookPost = (function (api) {
   };
 
   /**
-   * Generate a query string from Datastudio's requested fields and filters
-   *
-   * @param   {Object}  requestedFields  Datastudio Connector Request.fields Object
-   * @param   {Object]}  filters         Datastudio Connector Request.dimensionsFilters Object
-   * @return  {String}                   Query String
-   */
-  function buildQueryString(requestedFields = null, filters = null, overrideParams = null) {
-    var queryObject = {
-      fields: Model.getFieldsString(fields, requestedFields),
-      darkPost: false,
-      published: true,
-    };
-
-    if (filters) {
-      var nodeId = Filters.getNodeId(filters);
-      queryObject.ids = nodeId;
-    }
-
-    if (overrideParams) {
-      queryObject = {...queryObject, ...overrideParams};
-    }
-
-    return Model.toQueryString(queryObject);
-  }
-
-  /**
    * Find All rows from facebook-posts by querying the loopsider API
    *
    * @param   {Object}  request                           Datastudio Connector Request Object
@@ -139,13 +117,47 @@ var FacebookPost = (function (api) {
    *      @param   {String}  request.configParams.token
    *    @param   {Object}  request.fieds
    *    @param   {Object}  request.dimensionsFilters
+   * @param   {Object} overrideParams
    * @return  {Array}                                     API result data (result.data)
    */
   api.findAll = function findAll(request, overrideParams) {
-    var queryString = buildQueryString(request.fields, request.dimensionsFilters, overrideParams);
-    var url = API_HOST + endpoint + queryString;
+    var params = {
+      fields: FieldsParamHelper.getFieldsString(fields, request.fields),
+      darkPost: false,
+      published: true,
+      /* OTHER AVAILABLE PARAMS */
+      // page_id,
+      // ids,
+      // urls,
+      // search,
+      // categories,
+      // since,
+      // until,
+      // boosted,
+      // brandContent,
+      // repost,
+      // pilot,
+      // categorization_checked,
 
-    var content = API.fetchData(url, request.configParams.token);
+      /* FOR ORDERING */
+      // order (order field, default created_time),
+      // order_type (asc/desc, default desc),
+
+      /* FOR PAGINATION */
+      // limit,
+      // page,
+    };
+
+    if (request.dimensionsFilters) {
+      var nodeId = FiltersHelper.getNodeId(request.dimensionsFilters);
+      params.ids = nodeId;
+    }
+
+    if (overrideParams) {
+      params = {...params, ...overrideParams};
+    }
+
+    var content = API.fetchData(endpoint, params, request.configParams.token);
 
     return content ? content.data : null;
   };

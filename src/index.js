@@ -8,8 +8,8 @@ function isAdminUser() {
   return Auth.isAdminUser();
 }
 
-function getConfig() {
-  return Config.getConfig();
+function getConfig(request) {
+  return Config.getConfig(request);
 }
 
 function getSchema(request) {

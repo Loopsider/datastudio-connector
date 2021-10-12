@@ -28,18 +28,13 @@ var Data = (function (api) {
   // https://developers.google.com/datastudio/connector/reference#getdata
   api.getData = function getData(request) {
     console.log(request);
-    request.configParams = Config.validate(request.configParams);
+    console.log(request.dimensionsFilters);
+    var model = Config.getModel(request.configParams);
 
     var schema = {};
     var data = [];
     try {
-      var content = null;
-      var node = request.configParams.node;
-      if (node === 'facebook_post') {
-        content = FacebookPost.findAll(request);
-      } else {
-        throw new Error('Node type not handled !');
-      }
+      var content = model.findAll(request);
 
       schema = Schema.getSchemaFromContent(content, request);
       data = Data.format(content, request.fields);
@@ -49,6 +44,8 @@ var Data = (function (api) {
         .setText('The connector has encountered an unrecoverable error. Please try again later, or file an issue if this error persists.')
         .throwException();
     }
+
+    console.log(data);
 
     return {
       schema: schema,
