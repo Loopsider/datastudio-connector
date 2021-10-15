@@ -2,7 +2,7 @@
   'use strict';
 })();
 
-var FacebookPostRegion = (function (api) {
+var FacebookPostAge = (function (api) {
   if (!api) {
     api = Model;
   }
@@ -10,22 +10,22 @@ var FacebookPostRegion = (function (api) {
   var endpoint = '/facebook/posts';
 
   function prepareData(data) {
+    console.log(data);
     var preparedData = [];
     data.map(function (post) {
-      if (post.insight_video_view_time_region_lifetime) {
-        var regionData = JSON.parse(post.insight_video_view_time_region_lifetime);
-        delete post.insight_video_view_time_region_lifetime; // delete this so it won't be cloned
+      if (post.insight_video_age_gender_json) {
+        var ageData = post.insight_video_age_gender_json;
+        delete post.insight_video_age_gender_json; // delete this so it won't be cloned
 
-        Object.keys(regionData).map(function (regionName) {
+        Object.keys(ageData).map(function (regionName) {
           var row = JSON.parse(JSON.stringify(post)); // clone post data
-          row.region = regionName;
-          row.value = regionData[regionName];
+          row = {...row, ...ageData};
 
           preparedData.push(row);
         });
       }
     });
-
+    console.log(preparedData);
     return preparedData;
   }
 
@@ -42,7 +42,7 @@ var FacebookPostRegion = (function (api) {
    */
   api.findAll = function findAll(request, overrideParams) {
     var params = {
-      fields: 'id,message,insight_video{view_time_region_lifetime}',
+      fields: 'id,message,insight_video{age_gender_json}',
       darkPost: false,
       published: true,
       content_type: 'video_inline,video_direct_response',
@@ -108,8 +108,8 @@ var FacebookPostRegion = (function (api) {
         },
       },
       {
-        name: 'region',
-        label: 'region',
+        name: 'bucket',
+        label: 'bucket',
         dataType: DT.STRING.type,
         semantics: {
           conceptType: DT.STRING.concept,
@@ -127,4 +127,4 @@ var FacebookPostRegion = (function (api) {
   };
 
   return api;
-})(FacebookPostRegion || {});
+})(FacebookPostAge || {});

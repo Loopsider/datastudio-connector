@@ -12,7 +12,7 @@ var Data = (function (api) {
    * @param {Object} dailyDownload Contains the download data for a certain day.
    * @returns {Object} Contains values for requested fields in predefined format.
    */
-  api.format = function format(rawData, requestedFields) {
+  format = function format(rawData, requestedFields) {
     var rows = rawData.map(function (rawRow) {
       var values = requestedFields.map(function (requestedField) {
         return rawRow[requestedField.name];
@@ -28,16 +28,15 @@ var Data = (function (api) {
   // https://developers.google.com/datastudio/connector/reference#getdata
   api.getData = function getData(request) {
     console.log(request);
-    console.log(request.dimensionsFilters);
     var model = Config.getModel(request.configParams);
 
     var schema = {};
     var data = [];
     try {
-      var content = model.findAll(request);
+      schema = model.schema(request);
 
-      schema = Schema.getSchemaFromContent(content, request);
-      data = Data.format(content, request.fields);
+      var content = model.findAll(request);
+      data = format(content, request.fields);
     } catch (e) {
       CONNECTOR.newUserError()
         .setDebugText('Error fetching data from API. Exception details: ' + e)
@@ -52,5 +51,17 @@ var Data = (function (api) {
       rows: data,
     };
   };
+
+  // https://developers.google.com/datastudio/connector/reference#getschema
+  api.getSchema = function getSchema(request) {
+    console.log(request);
+    var model = Config.getModel(request.configParams);
+    var schema = model.schema(request);
+
+    return {
+      schema: schema,
+    };
+  };
+
   return api;
 })(Data || {});

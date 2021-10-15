@@ -9,11 +9,11 @@ var FieldsParamHelper = (function (api) {
    * @param   {Object}  fieldsDefinition
    * @return  {String}
    */
-  buildString = function buildString(fieldsDefinition) {
+  function getQueryParamString(fieldsDefinition) {
     var fieldsString = '';
     Object.keys(fieldsDefinition).map(function (fieldName) {
-      if (typeof fieldsDefinition[fieldName] === 'object' && fieldsDefinition[fieldName] !== null) {
-        fieldsString += fieldName + '{' + buildString(fieldsDefinition[fieldName]) + '},';
+      if (!fieldsDefinition[fieldName]._isDataType) {
+        fieldsString += fieldName + '{' + getQueryParamString(fieldsDefinition[fieldName]) + '},';
       } else {
         fieldsString += fieldName + ',';
       }
@@ -23,7 +23,7 @@ var FieldsParamHelper = (function (api) {
     }
 
     return fieldsString;
-  };
+  }
 
   /**
    * Helper function (recursive) to remove unnecessary fields from given field Object requested field names
@@ -32,7 +32,7 @@ var FieldsParamHelper = (function (api) {
    * @param   {Array}   names             list of valid field names
    * @return  {Object}
    */
-  findMinimumDefinition = function findMinimumDefinition(fieldsDefinition, names) {
+  function reduceRecursive(fieldsDefinition, names) {
     var updatedDefinition = {};
     names.map(function (name) {
       var suffix = '';
@@ -40,9 +40,11 @@ var FieldsParamHelper = (function (api) {
       while (!found) {
         if (Object.keys(fieldsDefinition).includes(name)) {
           found = true;
-          var value = true;
+          var value;
           if (suffix !== '') {
-            value = findMinimumDefinition(fieldsDefinition[name], [suffix]);
+            value = reduceRecursive(fieldsDefinition[name], [suffix]);
+          } else {
+            value = fieldsDefinition[name];
           }
 
           updatedDefinition[name] = value;
@@ -63,7 +65,38 @@ var FieldsParamHelper = (function (api) {
       }
     });
     return updatedDefinition;
-  };
+  }
+
+  function reduce(fieldsDefinition, requestedFields = null) {
+    if (requestedFields) {
+      // clean fieldsDefinition
+      var fieldNames = requestedFields.map(function (requestedField) {
+        return requestedField.name;
+      });
+      fieldsDefinition = reduceRecursive(fieldsDefinition, fieldNames);
+    }
+
+    return fieldsDefinition;
+  }
+
+  function flattenRecursive(fieldsDefinition, prefix = '') {
+    var flat = {};
+    Object.keys(fieldsDefinition).map(function (fieldName) {
+      if (!fieldsDefinition[fieldName]._isDataType) {
+        flat = {...flat, ...flattenRecursive(fieldsDefinition[fieldName], fieldName + '_')};
+      } else {
+        flat[prefix + fieldName] = fieldsDefinition[fieldName];
+      }
+    });
+    return flat;
+  }
+
+  function getFlattenArray(fieldsDefinition, requestedFields = null) {
+    fieldsDefinition = reduce(fieldsDefinition, requestedFields);
+
+    var flat = flattenRecursive(fieldsDefinition);
+    return flat;
+  }
 
   /**
    * Build a string from `field` object with only requested parts if `requestedFields` is given
@@ -72,19 +105,15 @@ var FieldsParamHelper = (function (api) {
    * @param   {Object|null}   requestedFields   `request.fields` from request Object. If null, get ALL fields.
    * @return  {String}
    */
-  api.getFieldsString = function getFieldsString(fieldsDefinition, requestedFields = null) {
-    if (requestedFields) {
-      // clean fieldsDefinition
-      var fieldNames = requestedFields.map(function (requestedField) {
-        return requestedField.name;
-      });
-      fieldsDefinition = findMinimumDefinition(fieldsDefinition, fieldNames);
-    }
-
-    var fields = buildString(fieldsDefinition);
+  function getFieldsString(fieldsDefinition, requestedFields = null) {
+    fieldsDefinition = reduce(fieldsDefinition, requestedFields);
+    var fields = getQueryParamString(fieldsDefinition);
 
     return fields;
-  };
+  }
+
+  api.getFlattenArray = getFlattenArray;
+  api.getFieldsString = getFieldsString;
 
   return api;
 })(FieldsParamHelper || {});

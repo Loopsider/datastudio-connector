@@ -3,84 +3,83 @@
 })();
 
 var InstagramMedia = (function (api) {
-  if (!api) {
-    api = Model;
-  }
+  var endpoint;
+  var fields;
 
-  var endpoint = '/instagram/medias';
-  var fields = {
-    id: true,
-    caption: true,
-    title: true,
-    created_time: true,
-    media_type: true,
-    permalink: true,
-    media_url: true,
-    thumbnail_url: true,
-    post_type: true,
-    storage_file: true,
-    storage_thumbnail: true,
-    screenshot_0: true,
-    screenshot_3: true,
-    screenshot_10: true,
-    screenshot_15: true,
-    sponsor_name: true,
-    sponsor_id: true,
-    account: {
-      name: true,
-      id: true,
-      profile_picture_url: true,
-      picture_file: true,
-    },
-    score: {
-      distribution_views: true,
-      distribution_impressions: true,
-      distribution_reach: true,
-      distribution_likes: true,
-      distribution_comments: true,
-      distribution_saved: true,
-      distribution_unfollow: true,
-      score_distribution: true,
-      score_retention: true,
-      score_captation: true,
-      score_captation_10s: true,
-      score_captation_15s: true,
-    },
-    insight: {
-      likes: true,
-      comments: true,
-      engagement_lifetime: true,
-      impressions_lifetime: true,
-      reach_lifetime: true,
-      retention_graph_json: true,
-      saved_lifetime: true,
-      video_views_lifetime: true,
-      profile_views: true,
-      profile_action_bio_link_clicked: true,
-      profile_action_call: true,
-      profile_action_direction: true,
-      profile_action_email: true,
-      profile_action_text: true,
-      account_follows: true,
-      reach_non_follower: true,
-      impressions_from_feed: true,
-      impressions_from_explore: true,
-      impressions_from_hashtags: true,
-      impressions_from_profile: true,
-      impressions_from_others: true,
-      length_lifetime: true,
-      views_10s_computed: true,
-      views_15s_computed: true,
-    },
-    insight_benchmark: {
-      comments: true,
-      likes: true,
-      saved: true,
-      reach: true,
-      video_views: true,
-      score_distribution: true,
-      average_retention_graph_json: true,
-    },
+  api._init = function _init() {
+    endpoint = '/instagram/medias';
+    fields = {
+      id: DT.DIMENSION_NUMBER,
+      caption: DT.STRING,
+      title: DT.STRING,
+      created_time: DT.DATETIME,
+      media_type: DT.STRING,
+      permalink: DT.URL,
+      media_url: DT.URL,
+      thumbnail_url: DT.URL,
+      post_type: DT.STRING,
+      storage_file: DT.STRING,
+      storage_thumbnail: DT.STRING,
+      screenshot_0: DT.STRING,
+      screenshot_3: DT.STRING,
+      screenshot_10: DT.STRING,
+      screenshot_15: DT.STRING,
+      sponsor_name: DT.STRING,
+      sponsor_id: DT.STRING,
+      account: {
+        name: DT.STRING,
+        id: DT.DIMENSION_NUMBER,
+        profile_picture_url: DT.STRING,
+        picture_file: DT.STRING,
+      },
+      score: {
+        distribution_views: DT.METRIC_NUMBER,
+        distribution_impressions: DT.METRIC_NUMBER,
+        distribution_reach: DT.METRIC_NUMBER,
+        distribution_likes: DT.METRIC_NUMBER,
+        distribution_comments: DT.METRIC_NUMBER,
+        distribution_saved: DT.METRIC_NUMBER,
+        distribution_unfollow: DT.METRIC_NUMBER,
+        score_distribution: DT.METRIC_NUMBER,
+        score_retention: DT.METRIC_NUMBER_PERCENT,
+        score_captation: DT.METRIC_NUMBER_PERCENT,
+        score_captation_10s: DT.METRIC_NUMBER_PERCENT,
+        score_captation_15s: DT.METRIC_NUMBER_PERCENT,
+      },
+      insight: {
+        likes: DT.METRIC_NUMBER,
+        comments: DT.METRIC_NUMBER,
+        engagement_lifetime: DT.METRIC_NUMBER,
+        impressions_lifetime: DT.METRIC_NUMBER,
+        reach_lifetime: DT.METRIC_NUMBER,
+        saved_lifetime: DT.METRIC_NUMBER,
+        video_views_lifetime: DT.METRIC_NUMBER,
+        profile_views: DT.METRIC_NUMBER,
+        profile_action_bio_link_clicked: DT.METRIC_NUMBER,
+        profile_action_call: DT.METRIC_NUMBER,
+        profile_action_direction: DT.METRIC_NUMBER,
+        profile_action_email: DT.METRIC_NUMBER,
+        profile_action_text: DT.METRIC_NUMBER,
+        account_follows: DT.METRIC_NUMBER,
+        reach_non_follower: DT.METRIC_NUMBER,
+        impressions_from_feed: DT.METRIC_NUMBER,
+        impressions_from_explore: DT.METRIC_NUMBER,
+        impressions_from_hashtags: DT.METRIC_NUMBER,
+        impressions_from_profile: DT.METRIC_NUMBER,
+        impressions_from_others: DT.METRIC_NUMBER,
+        length_lifetime: DT.METRIC_NUMBER,
+        views_10s_computed: DT.METRIC_NUMBER,
+        views_15s_computed: DT.METRIC_NUMBER,
+      },
+      insight_benchmark: {
+        comments: DT.METRIC_NUMBER,
+        likes: DT.METRIC_NUMBER,
+        saved: DT.METRIC_NUMBER,
+        reach: DT.METRIC_NUMBER,
+        video_views: DT.METRIC_NUMBER,
+        score_distribution: DT.METRIC_NUMBER_PERCENT,
+      },
+    };
   };
 
   /**
@@ -129,8 +128,26 @@ var InstagramMedia = (function (api) {
     }
 
     var content = API.fetchData(endpoint, params, request.configParams.token);
+    var data = DataHelper.prepare(content ? content.data : [], fields, request.fields);
 
-    return content ? content.data : null;
+    return data;
+  };
+
+  api.schema = function schema(request) {
+    var flat = FieldsParamHelper.getFlattenArray(fields, request.fields);
+
+    var fixedSchema = Object.keys(flat).map(function (fieldName) {
+      var schemaField = {
+        name: fieldName,
+        label: fieldName,
+        dataType: flat[fieldName].type,
+        semantics: flat[fieldName].semantics,
+      };
+
+      return schemaField;
+    });
+
+    return fixedSchema;
   };
 
   return api;

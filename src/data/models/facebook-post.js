@@ -3,110 +3,104 @@
 })();
 
 var FacebookPost = (function (api) {
-  if (!api) {
-    api = Model;
-  }
+  var endpoint;
+  var fields;
 
-  var endpoint = '/facebook/posts';
-  var fields = {
-    id: true,
-    message: true,
-    created_time: true,
-    sponsor: {
-      picture_file: true,
-      name: true,
-      network_id: true,
-    },
-    permalink_url: true,
-    ads: true,
-    category: true,
-    categorization_is_corrected: true,
-    page: {
-      id: true,
-      name: true,
-      picture_file: true,
-      is_pilot_page: true,
-      picture: true,
-    },
-    attachment: {
-      thumbnail: true,
-      storage_thumbnail: true,
-      type: true,
-      source: true,
-      title: true,
-      url: true,
-      storage_file: true,
-      screenshot_0: true,
-      screenshot_3: true,
-      screenshot_6: true,
-      screenshot_10: true,
-    },
-    insight_video: {
-      length_lifetime: true,
-      views_lifetime: true,
-      views_10s_lifetime: true,
-      views_30s_lifetime: true,
-      views_15s_computed: true,
-      views_60s_computed: true,
-      retention_graph_json: true,
-      view_time_region_lifetime: true,
-      age_gender_json: true,
-      avg_time_watched_lifetime: true,
-      view_time_lifetime: true,
-      complete_views_organic_lifetime: true,
-      complete_views_paid_lifetime: true,
-      ad_break_ad_impressions_lifetime: true,
-      ad_break_earnings_lifetime: true,
-      ad_break_ad_cpm_lifetime: true,
-    },
-    insight_engagement: {
-      engaged_users_lifetime: true,
-      clicks_lifetime: true,
-      comments: true,
-      shares: true,
-    },
-    insight_impression: {
-      total_lifetime: true,
-      viral_lifetime: true,
-      nonviral_lifetime: true,
-      fan_lifetime: true,
-    },
-    insight_reaction: {
-      like_total_lifetime: true,
-      love_total_lifetime: true,
-      wow_total_lifetime: true,
-      haha_total_lifetime: true,
-      sorry_total_lifetime: true,
-      anger_total_lifetime: true,
-    },
-    insight_score: {
-      score_retention: true,
-      score_interaction: true,
-      score_captation: true,
-      score_captation_6s: true,
-      score_captation_10s: true,
-      score_distribution: true,
-    },
-    insight_benchmark: {
-      video_views: true,
-      video_views_10s: true,
-      video_views_30s: true,
-      video_views_60s: true,
-      video_view_time: true,
-      video_avg_time_watched: true,
-      reaction_like: true,
-      reaction_love: true,
-      reaction_wow: true,
-      reaction_haha: true,
-      reaction_sorry: true,
-      reaction_anger: true,
-      engagement_comments: true,
-      engagement_shares: true,
-      average_retention_graph_json: true,
-    },
-    boost: {
-      status: true,
-    },
+  api._init = function _init() {
+    endpoint = '/facebook/posts';
+    fields = {
+      id: DT.DIMENSION_NUMBER,
+      message: DT.STRING,
+      created_time: DT.DATETIME,
+      sponsor: {
+        picture_file: DT.STRING,
+        name: DT.STRING,
+        network_id: DT.STRING,
+      },
+      permalink_url: DT.URL,
+      ads: DT.BOOLEAN,
+      category: DT.DIMENSION_NUMBER,
+      categorization_is_corrected: DT.BOOLEAN,
+      page: {
+        id: DT.DIMENSION_NUMBER,
+        name: DT.STRING,
+        picture_file: DT.STRING,
+        is_pilot_page: DT.BOOLEAN,
+        picture: DT.STRING,
+      },
+      attachment: {
+        thumbnail: DT.STRING,
+        storage_thumbnail: DT.STRING,
+        type: DT.STRING,
+        source: DT.STRING,
+        title: DT.STRING,
+        url: DT.URL,
+        storage_file: DT.STRING,
+        screenshot_0: DT.STRING,
+        screenshot_3: DT.STRING,
+        screenshot_6: DT.STRING,
+        screenshot_10: DT.STRING,
+      },
+      insight_video: {
+        length_lifetime: DT.METRIC_NUMBER,
+        views_lifetime: DT.METRIC_NUMBER,
+        views_10s_lifetime: DT.METRIC_NUMBER,
+        views_30s_lifetime: DT.METRIC_NUMBER,
+        views_15s_computed: DT.METRIC_NUMBER,
+        views_60s_computed: DT.METRIC_NUMBER,
+        avg_time_watched_lifetime: DT.METRIC_NUMBER,
+        view_time_lifetime: DT.METRIC_NUMBER,
+        complete_views_organic_lifetime: DT.METRIC_NUMBER,
+        complete_views_paid_lifetime: DT.METRIC_NUMBER,
+        ad_break_ad_impressions_lifetime: DT.METRIC_NUMBER,
+        ad_break_earnings_lifetime: DT.METRIC_NUMBER,
+        ad_break_ad_cpm_lifetime: DT.METRIC_NUMBER,
+      },
+      insight_engagement: {
+        engaged_users_lifetime: DT.METRIC_NUMBER,
+        clicks_lifetime: DT.METRIC_NUMBER,
+        comments: DT.METRIC_NUMBER,
+        shares: DT.METRIC_NUMBER,
+      },
+      insight_impression: {
+        total_lifetime: DT.METRIC_NUMBER,
+        viral_lifetime: DT.METRIC_NUMBER,
+        nonviral_lifetime: DT.METRIC_NUMBER,
+        fan_lifetime: DT.METRIC_NUMBER,
+      },
+      insight_reaction: {
+        like_total_lifetime: DT.METRIC_NUMBER,
+        love_total_lifetime: DT.METRIC_NUMBER,
+        wow_total_lifetime: DT.METRIC_NUMBER,
+        haha_total_lifetime: DT.METRIC_NUMBER,
+        sorry_total_lifetime: DT.METRIC_NUMBER,
+        anger_total_lifetime: DT.METRIC_NUMBER,
+      },
+      insight_score: {
+        score_retention: DT.METRIC_NUMBER_PERCENT,
+        score_interaction: DT.METRIC_NUMBER_PERCENT,
+        score_captation: DT.METRIC_NUMBER_PERCENT,
+        score_captation_6s: DT.METRIC_NUMBER_PERCENT,
+        score_captation_10s: DT.METRIC_NUMBER_PERCENT,
+        score_distribution: DT.METRIC_NUMBER,
+      },
+      insight_benchmark: {
+        video_views: DT.METRIC_NUMBER,
+        video_views_10s: DT.METRIC_NUMBER,
+        video_views_30s: DT.METRIC_NUMBER,
+        video_views_60s: DT.METRIC_NUMBER,
+        video_view_time: DT.METRIC_NUMBER,
+        video_avg_time_watched: DT.METRIC_NUMBER,
+        reaction_like: DT.METRIC_NUMBER,
+        reaction_love: DT.METRIC_NUMBER,
+        reaction_wow: DT.METRIC_NUMBER,
+        reaction_haha: DT.METRIC_NUMBER,
+        reaction_sorry: DT.METRIC_NUMBER,
+        reaction_anger: DT.METRIC_NUMBER,
+        engagement_comments: DT.METRIC_NUMBER,
+        engagement_shares: DT.METRIC_NUMBER,
+      },
+    };
   };
 
   /**
@@ -158,8 +152,26 @@ var FacebookPost = (function (api) {
     }
 
     var content = API.fetchData(endpoint, params, request.configParams.token);
+    var data = DataHelper.prepare(content ? content.data : [], fields, request.fields);
 
-    return content ? content.data : null;
+    return data;
+  };
+
+  api.schema = function schema(request) {
+    var flat = FieldsParamHelper.getFlattenArray(fields, request.fields);
+
+    var fixedSchema = Object.keys(flat).map(function (fieldName) {
+      var schemaField = {
+        name: fieldName,
+        label: fieldName,
+        dataType: flat[fieldName].type,
+        semantics: flat[fieldName].semantics,
+      };
+
+      return schemaField;
+    });
+
+    return fixedSchema;
   };
 
   return api;

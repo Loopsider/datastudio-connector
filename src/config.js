@@ -9,6 +9,7 @@ var Config = (function (api) {
     var configParams = request ? request.configParams : null;
 
     var form = CONNECTOR.getConfig();
+    form.setIsSteppedConfig(true);
 
     form.newInfo().setId('instructions').setText("Configurer l'authentification à l'API loopsider");
 
@@ -58,6 +59,9 @@ var Config = (function (api) {
           cc.newUserError().setText("Le type de données sélectionné n'est pas valide").throwException();
         }
       }
+
+      // all steps have been completed
+      form.setIsSteppedConfig(false);
     }
 
     return form.build();
@@ -76,6 +80,9 @@ var Config = (function (api) {
     if (node === 'facebook_post') {
       if (nodeOption === 'region') {
         return FacebookPostRegion;
+      }
+      if (nodeOption === 'age') {
+        return FacebookPostAge;
       }
       return FacebookPost;
     } else if (node === 'instagram_media') {
