@@ -12,7 +12,7 @@ var Data = (function (api) {
    * @param {Object} dailyDownload Contains the download data for a certain day.
    * @returns {Object} Contains values for requested fields in predefined format.
    */
-  format = function format(rawData, requestedFields) {
+  formatData = function formatData(rawData, requestedFields) {
     var rows = rawData.map(function (rawRow) {
       var values = requestedFields.map(function (requestedField) {
         return rawRow[requestedField.name];
@@ -22,6 +22,7 @@ var Data = (function (api) {
         values: values,
       };
     });
+
     return rows;
   };
 
@@ -36,7 +37,7 @@ var Data = (function (api) {
       schema = model.schema(request);
 
       var content = model.findAll(request);
-      data = format(content, request.fields);
+      data = formatData(content, request.fields);
     } catch (e) {
       CONNECTOR.newUserError()
         .setDebugText('Error fetching data from API. Exception details: ' + e)
@@ -44,7 +45,8 @@ var Data = (function (api) {
         .throwException();
     }
 
-    console.log(data);
+    console.log('SCHEMA', schema);
+    console.log('DATA', data);
 
     return {
       schema: schema,

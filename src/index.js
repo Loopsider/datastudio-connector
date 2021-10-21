@@ -4,6 +4,7 @@ function init() {
   DT._init();
 
   FacebookPost._init();
+  FacebookPostAge._init();
   InstagramMedia._init();
 }
 

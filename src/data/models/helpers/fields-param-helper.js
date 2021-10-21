@@ -47,7 +47,11 @@ var FieldsParamHelper = (function (api) {
             value = fieldsDefinition[name];
           }
 
-          updatedDefinition[name] = value;
+          if (updatedDefinition[name]) {
+            updatedDefinition[name] = {...value, ...updatedDefinition[name]};
+          } else {
+            updatedDefinition[name] = value;
+          }
         } else {
           var lastUnderscore = name.lastIndexOf('_');
           if (lastUnderscore === -1) {

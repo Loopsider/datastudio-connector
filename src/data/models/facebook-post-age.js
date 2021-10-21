@@ -7,25 +7,47 @@ var FacebookPostAge = (function (api) {
     api = Model;
   }
 
-  var endpoint = '/facebook/posts';
+  var endpoint;
+  var translations = {};
+
+  api._init = function _init() {
+    endpoint = '/facebook/posts';
+    translations = {
+      male: 'Masculin',
+      female: 'Féminin',
+      undefined: 'Indéfini',
+      '13_17': '13-17',
+      '18_24': '18-24',
+      '25_34': '25-34',
+      '35_44': '35-44',
+      '45_54': '45-54',
+      '55_64': '55-64',
+      '65_plus': '65+',
+    };
+  };
 
   function prepareData(data) {
-    console.log(data);
     var preparedData = [];
     data.map(function (post) {
       if (post.insight_video_age_gender_json) {
-        var ageData = post.insight_video_age_gender_json;
+        var bucketData = post.insight_video_age_gender_json;
         delete post.insight_video_age_gender_json; // delete this so it won't be cloned
 
-        Object.keys(ageData).map(function (regionName) {
+        if (bucketData.id) {
+          delete bucketData.id;
+        }
+        Object.keys(bucketData).map(function (bucketName) {
           var row = JSON.parse(JSON.stringify(post)); // clone post data
-          row = {...row, ...ageData};
+          row.bucket = bucketName; // eg. female_25_34
+          row.gender = translations[bucketName.split('_')[0]]; // eg. female
+          row.age = translations[bucketName.substring(bucketName.indexOf('_') + 1)]; // eg.24_34
+          row.value = bucketData[bucketName];
 
           preparedData.push(row);
         });
       }
     });
-    console.log(preparedData);
+
     return preparedData;
   }
 
@@ -70,7 +92,9 @@ var FacebookPostAge = (function (api) {
     };
 
     if (request.dimensionsFilters) {
+      console.log('DIMONSION', request.dimensionsFilters);
       var nodeId = FiltersHelper.getNodeId(request.dimensionsFilters);
+      console.log('NODEID', nodeId);
       params.ids = nodeId;
     }
 
@@ -79,6 +103,7 @@ var FacebookPostAge = (function (api) {
     }
 
     var content = API.fetchData(endpoint, params, request.configParams.token);
+    console.log('FETCHED CONTENT', content);
 
     if (!content) {
       return null;
@@ -90,40 +115,55 @@ var FacebookPostAge = (function (api) {
   };
 
   api.schema = function schema(request) {
-    return [
-      {
+    let schemaObject = {
+      id: {
         name: 'id',
         label: 'id',
         dataType: DT.DIMENSION_NUMBER.type,
-        semantics: {
-          conceptType: DT.DIMENSION_NUMBER.concept,
-        },
+        semantics: DT.DIMENSION_NUMBER.semantics,
       },
-      {
+      message: {
         name: 'message',
         label: 'message',
         dataType: DT.STRING.type,
-        semantics: {
-          conceptType: DT.STRING.concept,
-        },
+        semantics: DT.STRING.semantics,
       },
-      {
+      bucket: {
         name: 'bucket',
         label: 'bucket',
         dataType: DT.STRING.type,
-        semantics: {
-          conceptType: DT.STRING.concept,
-        },
+        semantics: DT.STRING.semantics,
       },
-      {
+      age: {
+        name: 'age',
+        label: 'age',
+        dataType: DT.STRING.type,
+        semantics: DT.STRING.semantics,
+      },
+      gender: {
+        name: 'gender',
+        label: 'gender',
+        dataType: DT.STRING.type,
+        semantics: DT.STRING.semantics,
+      },
+      value: {
         name: 'value',
         label: 'value',
         dataType: DT.METRIC_NUMBER.type,
-        semantics: {
-          conceptType: DT.METRIC_NUMBER.concept,
-        },
+        semantics: DT.METRIC_NUMBER.semantics,
       },
-    ];
+    };
+
+    var schemaArray = [];
+    if (request.fields) {
+      schemaArray = request.fields.map(function (requestedField) {
+        return schemaObject[requestedField.name];
+      });
+    } else {
+      schemaArray = Object.values(schemaObject);
+    }
+
+    return schemaArray;
   };
 
   return api;

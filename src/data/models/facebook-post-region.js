@@ -18,7 +18,7 @@ var FacebookPostRegion = (function (api) {
 
         Object.keys(regionData).map(function (regionName) {
           var row = JSON.parse(JSON.stringify(post)); // clone post data
-          row.region = regionName;
+          row.region = regionName.replace(' - France', '');
           row.value = regionData[regionName];
 
           preparedData.push(row);
@@ -90,40 +90,43 @@ var FacebookPostRegion = (function (api) {
   };
 
   api.schema = function schema(request) {
-    return [
-      {
+    let schemaObject = {
+      id: {
         name: 'id',
         label: 'id',
         dataType: DT.DIMENSION_NUMBER.type,
-        semantics: {
-          conceptType: DT.DIMENSION_NUMBER.concept,
-        },
+        semantics: DT.DIMENSION_NUMBER.semantics,
       },
-      {
+      message: {
         name: 'message',
         label: 'message',
         dataType: DT.STRING.type,
-        semantics: {
-          conceptType: DT.STRING.concept,
-        },
+        semantics: DT.STRING.semantics,
       },
-      {
+      region: {
         name: 'region',
         label: 'region',
         dataType: DT.STRING.type,
-        semantics: {
-          conceptType: DT.STRING.concept,
-        },
+        semantics: DT.STRING.semantics,
       },
-      {
+      value: {
         name: 'value',
         label: 'value',
         dataType: DT.METRIC_NUMBER.type,
-        semantics: {
-          conceptType: DT.METRIC_NUMBER.concept,
-        },
+        semantics: DT.METRIC_NUMBER.semantics,
       },
-    ];
+    };
+
+    var schemaArray = [];
+    if (request.fields) {
+      schemaArray = request.fields.map(function (requestedField) {
+        return schemaObject[requestedField.name];
+      });
+    } else {
+      schemaArray = Object.values(schemaObject);
+    }
+
+    return schemaArray;
   };
 
   return api;

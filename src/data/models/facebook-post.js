@@ -160,18 +160,26 @@ var FacebookPost = (function (api) {
   api.schema = function schema(request) {
     var flat = FieldsParamHelper.getFlattenArray(fields, request.fields);
 
-    var fixedSchema = Object.keys(flat).map(function (fieldName) {
-      var schemaField = {
+    var schemaObject = {};
+    Object.keys(flat).map(function (fieldName) {
+      schemaObject[fieldName] = {
         name: fieldName,
         label: fieldName,
         dataType: flat[fieldName].type,
         semantics: flat[fieldName].semantics,
       };
-
-      return schemaField;
     });
 
-    return fixedSchema;
+    var schemaArray = [];
+    if (request.fields) {
+      schemaArray = request.fields.map(function (requestedField) {
+        return schemaObject[requestedField.name];
+      });
+    } else {
+      schemaArray = Object.values(schemaObject);
+    }
+
+    return schemaArray;
   };
 
   return api;
