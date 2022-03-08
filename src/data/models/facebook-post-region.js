@@ -65,13 +65,16 @@ var FacebookPostRegion = (function (api) {
       // order_type (asc/desc, default desc),
 
       /* FOR PAGINATION */
-      // limit,
+      limit: 50000,
       // page,
     };
 
     if (request.dimensionsFilters) {
       var nodeId = FiltersHelper.getNodeId(request.dimensionsFilters);
       params.ids = nodeId;
+
+      var pageId = FiltersHelper.getPageId(request.dimensionsFilters);
+      params.page_id = pageId;
     }
 
     if (overrideParams) {

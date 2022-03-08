@@ -33,7 +33,6 @@ var API = (function (api) {
    */
   api.fetchData = function fetchData(endpoint, params, token) {
     var queryString = toQueryString(params);
-    console.log(queryString);
 
     var options = {
       crossDomain: true,

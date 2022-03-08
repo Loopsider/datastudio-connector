@@ -28,7 +28,6 @@ var Data = (function (api) {
 
   // https://developers.google.com/datastudio/connector/reference#getdata
   api.getData = function getData(request) {
-    console.log(request);
     var model = Config.getModel(request.configParams);
 
     var schema = {};
@@ -45,9 +44,6 @@ var Data = (function (api) {
         .throwException();
     }
 
-    console.log('SCHEMA', schema);
-    console.log('DATA', data);
-
     return {
       schema: schema,
       rows: data,
@@ -56,7 +52,6 @@ var Data = (function (api) {
 
   // https://developers.google.com/datastudio/connector/reference#getschema
   api.getSchema = function getSchema(request) {
-    console.log(request);
     var model = Config.getModel(request.configParams);
     var schema = model.schema(request);
 

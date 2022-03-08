@@ -87,15 +87,16 @@ var FacebookPostAge = (function (api) {
       // order_type (asc/desc, default desc),
 
       /* FOR PAGINATION */
-      // limit,
+      limit: 50000,
       // page,
     };
 
     if (request.dimensionsFilters) {
-      console.log('DIMONSION', request.dimensionsFilters);
       var nodeId = FiltersHelper.getNodeId(request.dimensionsFilters);
-      console.log('NODEID', nodeId);
       params.ids = nodeId;
+
+      var pageId = FiltersHelper.getPageId(request.dimensionsFilters);
+      params.page_id = pageId;
     }
 
     if (overrideParams) {
@@ -103,7 +104,6 @@ var FacebookPostAge = (function (api) {
     }
 
     var content = API.fetchData(endpoint, params, request.configParams.token);
-    console.log('FETCHED CONTENT', content);
 
     if (!content) {
       return null;
