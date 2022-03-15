@@ -42,6 +42,7 @@ var API = (function (api) {
         Authorization: token,
       },
     };
+    console.log('API CALL', API_HOST + endpoint + queryString, options);
     var response = UrlFetchApp.fetch(API_HOST + endpoint + queryString, options);
     var result = JSON.parse(response);
 

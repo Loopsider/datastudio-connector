@@ -100,12 +100,15 @@ var FacebookPostDaily = (function (api) {
     };
 
     if (request.dimensionsFilters) {
-      console.log(request.dimensionsFilters);
       var nodeId = FiltersHelper.getNodeId(request.dimensionsFilters);
-      params.ids = nodeId;
+      if (nodeId) {
+        params.ids = nodeId;
+      }
 
       var pageId = FiltersHelper.getPageId(request.dimensionsFilters);
-      params.page_id = pageId;
+      if (pageId) {
+        params.page_id = pageId;
+      }
     }
     if (request.dateRange) {
       params.fields = params.fields.replace(

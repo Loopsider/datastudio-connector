@@ -120,7 +120,9 @@ var InstagramMediaDaily = (function (api) {
 
     if (request.dimensionsFilters) {
       var nodeId = FiltersHelper.getNodeId(request.dimensionsFilters);
-      params.ids = nodeId;
+      if (nodeId) {
+        params.ids = nodeId;
+      }
     }
 
     if (overrideParams) {

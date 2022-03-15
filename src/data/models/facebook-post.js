@@ -144,10 +144,15 @@ var FacebookPost = (function (api) {
 
     if (request.dimensionsFilters) {
       var nodeId = FiltersHelper.getNodeId(request.dimensionsFilters);
-      params.ids = nodeId;
+      if (nodeId) {
+        params.ids = nodeId;
+      }
 
       var pageId = FiltersHelper.getPageId(request.dimensionsFilters);
-      params.page_id = pageId;
+      console.log('PAAAAAAAAAAAAAGE', pageId);
+      if (pageId) {
+        params.page_id = pageId;
+      }
     }
 
     if (overrideParams) {
