@@ -33,6 +33,8 @@ var TiktokVideo = (function (api) {
       is_ad: DT.BOOLEAN,
       duet_display: DT.DIMENSION_NUMBER,
       stitch_display: DT.DIMENSION_NUMBER,
+      storage_thumbnail: DT.STRING,
+      storage_file: DT.STRING,
       author: {
         id: DT.DIMENSION_NUMBER,
         network_id: DT.STRING,
@@ -53,6 +55,7 @@ var TiktokVideo = (function (api) {
         stitch_setting: DT.DIMENSION_NUMBER,
         private_account: DT.BOOLEAN,
         is_ad_virtual: DT.BOOLEAN,
+        storage_avatar: DT.STRING,
       },
       insight: {
         id: DT.DIMENSION_NUMBER,

@@ -21,7 +21,6 @@ function isAdminUser() {
 }
 
 function getConfig(request) {
-  console.log(request);
   init();
   return Config.getConfig(request);
 }

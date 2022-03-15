@@ -10,13 +10,17 @@ var Config = (function (api) {
     var form = CONNECTOR.getConfig();
     form.setIsSteppedConfig(true);
 
+    form
+      .newInfo()
+      .setId('version')
+      .setText('Version du connecteur : ' + CONNECTOR_VERSION);
     form.newInfo().setId('instructions').setText("Configurer l'authentification à l'API loopsider");
 
     form
       .newTextInput()
       .setId('token')
       .setName('Loopsider API access token')
-      .setHelpText("Demander ce token a l'équipe technique")
+      .setHelpText("Demander ce token à l'équipe technique")
       .setPlaceholder('')
       .setAllowOverride(false);
 
@@ -48,14 +52,15 @@ var Config = (function (api) {
           nodeOption
             .addOption(form.newOptionBuilder().setLabel('Aucune').setValue('none'))
             .addOption(form.newOptionBuilder().setLabel('Audience par région').setValue('region'))
-            .addOption(form.newOptionBuilder().setLabel('Audience par âge').setValue('age'))
-            .addOption(form.newOptionBuilder().setLabel('Données quotidiennes').setValue('daily'));
+            .addOption(form.newOptionBuilder().setLabel('Audience par âge').setValue('age'));
+          // may be available in the future :
+          //.addOption(form.newOptionBuilder().setLabel('Données quotidiennes').setValue('daily'));
           break;
         }
         case 'instagram_media': {
-          nodeOption
-            .addOption(form.newOptionBuilder().setLabel('Aucune').setValue('none'))
-            .addOption(form.newOptionBuilder().setLabel('Données quotidiennes').setValue('daily'));
+          nodeOption.addOption(form.newOptionBuilder().setLabel('Aucune').setValue('none'));
+          // may be available in the future :
+          //.addOption(form.newOptionBuilder().setLabel('Données quotidiennes').setValue('daily'));
           break;
         }
         case 'tiktok_video': {
