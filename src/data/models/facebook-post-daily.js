@@ -2,7 +2,7 @@
   'use strict';
 })();
 
-var FacebookPost = (function (api) {
+var FacebookPostDaily = (function (api) {
   var endpoint;
   var fields;
 
@@ -41,41 +41,6 @@ var FacebookPost = (function (api) {
         screenshot_6: DT.STRING,
         screenshot_10: DT.STRING,
       },
-      insight_video: {
-        length_lifetime: DT.METRIC_NUMBER,
-        views_lifetime: DT.METRIC_NUMBER,
-        views_10s_lifetime: DT.METRIC_NUMBER,
-        views_30s_lifetime: DT.METRIC_NUMBER,
-        views_15s_computed: DT.METRIC_NUMBER,
-        views_60s_computed: DT.METRIC_NUMBER,
-        avg_time_watched_lifetime: DT.METRIC_NUMBER,
-        view_time_lifetime: DT.METRIC_NUMBER,
-        complete_views_organic_lifetime: DT.METRIC_NUMBER,
-        complete_views_paid_lifetime: DT.METRIC_NUMBER,
-        ad_break_ad_impressions_lifetime: DT.METRIC_NUMBER,
-        ad_break_earnings_lifetime: DT.METRIC_NUMBER,
-        ad_break_ad_cpm_lifetime: DT.METRIC_NUMBER,
-      },
-      insight_engagement: {
-        engaged_users_lifetime: DT.METRIC_NUMBER,
-        clicks_lifetime: DT.METRIC_NUMBER,
-        comments: DT.METRIC_NUMBER,
-        shares: DT.METRIC_NUMBER,
-      },
-      insight_impression: {
-        total_lifetime: DT.METRIC_NUMBER,
-        viral_lifetime: DT.METRIC_NUMBER,
-        nonviral_lifetime: DT.METRIC_NUMBER,
-        fan_lifetime: DT.METRIC_NUMBER,
-      },
-      insight_reaction: {
-        like_total_lifetime: DT.METRIC_NUMBER,
-        love_total_lifetime: DT.METRIC_NUMBER,
-        wow_total_lifetime: DT.METRIC_NUMBER,
-        haha_total_lifetime: DT.METRIC_NUMBER,
-        sorry_total_lifetime: DT.METRIC_NUMBER,
-        anger_total_lifetime: DT.METRIC_NUMBER,
-      },
       insight_score: {
         score_retention: DT.METRIC_NUMBER_PERCENT,
         score_interaction: DT.METRIC_NUMBER_PERCENT,
@@ -84,21 +49,13 @@ var FacebookPost = (function (api) {
         score_captation_10s: DT.METRIC_NUMBER_PERCENT,
         score_distribution: DT.METRIC_NUMBER,
       },
-      insight_benchmark: {
-        video_views: DT.METRIC_NUMBER,
-        video_views_10s: DT.METRIC_NUMBER,
-        video_views_30s: DT.METRIC_NUMBER,
+      // (start_date=$PARAM_SINCE$&&end_date=$PARAM_UNTIL$)
+      daily_insight: {
+        day: DT.DATETIME,
+        impressions: DT.METRIC_NUMBER,
         video_views_60s: DT.METRIC_NUMBER,
-        video_view_time: DT.METRIC_NUMBER,
-        video_avg_time_watched: DT.METRIC_NUMBER,
-        reaction_like: DT.METRIC_NUMBER,
-        reaction_love: DT.METRIC_NUMBER,
-        reaction_wow: DT.METRIC_NUMBER,
-        reaction_haha: DT.METRIC_NUMBER,
-        reaction_sorry: DT.METRIC_NUMBER,
-        reaction_anger: DT.METRIC_NUMBER,
-        engagement_comments: DT.METRIC_NUMBER,
-        engagement_shares: DT.METRIC_NUMBER,
+        video_views: DT.METRIC_NUMBER,
+        ad_break_revenue: DT.METRIC_NUMBER,
       },
     };
   };
@@ -149,10 +106,15 @@ var FacebookPost = (function (api) {
       }
 
       var pageId = FiltersHelper.getPageId(request.dimensionsFilters);
-      console.log('PAAAAAAAAAAAAAGE', pageId);
       if (pageId) {
         params.page_id = pageId;
       }
+    }
+    if (request.dateRange) {
+      params.fields = params.fields.replace(
+        'daily_insight{',
+        `daily_insight(start_date=${request.dateRange.startDate}&&end_date=${request.dateRange.endDate}){`
+      );
     }
 
     if (overrideParams) {
@@ -191,4 +153,4 @@ var FacebookPost = (function (api) {
   };
 
   return api;
-})(FacebookPost || {});
+})(FacebookPostDaily || {});

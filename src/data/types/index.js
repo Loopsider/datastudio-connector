@@ -72,7 +72,6 @@ var DT = (function (api) {
           .toISOString()
           .replaceAll(/[^0-9]+/g, '')
           .slice(0, -3);
-        console.log('format', value, formatted);
         return formatted;
       },
     };

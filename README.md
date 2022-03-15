@@ -31,10 +31,10 @@ clasp push --watch
 **Use production version**
 
 Description: Production
-Deployment ID: AKfycbytrw_mA6XnA1QnctSQJjZ8-HnNrdil1cQ6bVk1S_mmlRH9gi2qoHRoAOECmPJPWOES
+Deployment ID: AKfycbyFqjj-60VrgQjw2fBjkGBLSmOChmir6L-14Npafs6SfDGnUcAqq6GGEM7ZGnjgGXxr
 
 To create a new data source using this connector:
-[https://datastudio.google.com/datasources/create?connectorId=AKfycbytrw_mA6XnA1QnctSQJjZ8-HnNrdil1cQ6bVk1S_mmlRH9gi2qoHRoAOECmPJPWOES]
+[https://datastudio.google.com/datasources/create?connectorId=AKfycbyFqjj-60VrgQjw2fBjkGBLSmOChmir6L-14Npafs6SfDGnUcAqq6GGEM7ZGnjgGXxr]
 
 **Development version**
 

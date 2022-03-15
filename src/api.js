@@ -33,7 +33,6 @@ var API = (function (api) {
    */
   api.fetchData = function fetchData(endpoint, params, token) {
     var queryString = toQueryString(params);
-    console.log(queryString);
 
     var options = {
       crossDomain: true,
@@ -43,6 +42,7 @@ var API = (function (api) {
         Authorization: token,
       },
     };
+    console.log('API CALL', API_HOST + endpoint + queryString, options);
     var response = UrlFetchApp.fetch(API_HOST + endpoint + queryString, options);
     var result = JSON.parse(response);
 

@@ -2,7 +2,7 @@
   'use strict';
 })();
 
-var InstagramMedia = (function (api) {
+var InstagramMediaDaily = (function (api) {
   var endpoint;
   var fields;
 
@@ -161,4 +161,4 @@ var InstagramMedia = (function (api) {
   };
 
   return api;
-})(InstagramMedia || {});
+})(InstagramMediaDaily || {});
