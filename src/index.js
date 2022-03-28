@@ -7,6 +7,7 @@ function init() {
   FacebookPostAge._init();
   FacebookPostDaily._init();
   InstagramMedia._init();
+  InstagramStory._init();
   TiktokVideo._init();
 }
 
@@ -26,13 +27,11 @@ function getConfig(request) {
 }
 
 function getSchema(request) {
-  console.log(request);
   init();
   return Data.getSchema(request);
 }
 
 function getData(request) {
-  console.log(request);
   init();
   return Data.getData(request);
 }

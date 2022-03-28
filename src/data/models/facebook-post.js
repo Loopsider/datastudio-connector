@@ -149,7 +149,6 @@ var FacebookPost = (function (api) {
       }
 
       var pageId = FiltersHelper.getPageId(request.dimensionsFilters);
-      console.log('PAAAAAAAAAAAAAGE', pageId);
       if (pageId) {
         params.page_id = pageId;
       }
