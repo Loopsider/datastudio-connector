@@ -52,24 +52,22 @@ var InstagramStory = (function (api) {
       /* OTHER AVAILABLE PARAMS */
       // page_id
       // ids
-      // urls
-      // search
-      // content_type
-      // brandContent
-      // categories
       // since
       // until
-      // categorization_checked
 
       /* FOR ORDERING */
       // order (order field, default created_time),
       // order_type (asc/desc, default desc),
 
       /* FOR PAGINATION */
-      // limit,
+      limit: 1000,
       // page,
     };
 
+    if (request.dateRange && request.dateRange.startDate && request.dateRange.endDate) {
+      params.since = request.dateRange.startDate;
+      params.until = request.dateRange.endDate;
+    }
     if (request.dimensionsFilters) {
       var nodeId = FiltersHelper.getNodeId(request.dimensionsFilters);
       if (nodeId) {
