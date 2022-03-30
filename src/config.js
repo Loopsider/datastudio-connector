@@ -39,6 +39,7 @@ var Config = (function (api) {
       .addOption(form.newOptionBuilder().setLabel('Facebook Posts (données privées)').setValue('facebook_post'))
       //.addOption(conf.newOptionBuilder().setLabel('Facebook Posts (données marché)').setValue('crowdtangle_facebook'))
       .addOption(form.newOptionBuilder().setLabel('Instagram Media (données privées)').setValue('instagram_media'))
+      .addOption(form.newOptionBuilder().setLabel('Instagram Stories (données privées)').setValue('instagram_story'))
       .addOption(form.newOptionBuilder().setLabel('Tiktok Video (données publiques)').setValue('tiktok_video'));
 
     if (configParams) {
@@ -61,6 +62,10 @@ var Config = (function (api) {
           nodeOption.addOption(form.newOptionBuilder().setLabel('Aucune').setValue('none'));
           // may be available in the future :
           //.addOption(form.newOptionBuilder().setLabel('Données quotidiennes').setValue('daily'));
+          break;
+        }
+        case 'instagram_story': {
+          nodeOption.addOption(form.newOptionBuilder().setLabel('Aucune').setValue('none'));
           break;
         }
         case 'tiktok_video': {
@@ -105,6 +110,8 @@ var Config = (function (api) {
         return InstagramMediaDaily;
       }
       return InstagramMedia;
+    } else if (node === 'instagram_story') {
+      return InstagramStory;
     } else if (node === 'tiktok_video') {
       return TiktokVideo;
     }
